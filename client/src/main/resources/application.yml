@@ -1,0 +1,18 @@
+spring:
+  main:
+    lazy-initialization: false
+  application:
+    name: client
+
+logging:
+  level:
+    org.springframework: INFO
+
+server:
+  port: 8081
+  error:
+    include-stacktrace: always
+  tomcat:
+    connection-timeout: 5s
+    keep-alive-timeout: 30s
+    max-keep-alive-requests: 100

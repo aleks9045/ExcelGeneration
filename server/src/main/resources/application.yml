@@ -1,0 +1,35 @@
+spring:
+  main:
+    lazy-initialization: false
+  application:
+    name: server
+
+logging:
+  level:
+    org.springframework: INFO
+
+server:
+  port: 8080
+  error:
+    include-stacktrace: always
+  tomcat:
+    connection-timeout: 5s
+    keep-alive-timeout: 30s
+    max-keep-alive-requests: 100
+
+files:
+  upload-folder:
+    fast-excel: "static/fast_excel/"
+    apache-poi: "static/apache_poi/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        exclude: "*"
+  endpoint:
+    metrics:
+      access: unrestricted
