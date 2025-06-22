@@ -19,8 +19,13 @@
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.source>21</maven.compiler.source>
 
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+
         <lombok.version>1.18.38</lombok.version>
         <spring-boot.version>3.5.3</spring-boot.version>
+        <spring-docs.version>2.8.6</spring-docs.version>
     </properties>
 
     <dependencyManagement>
@@ -32,6 +37,12 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${spring-docs.version}</version>
             </dependency>
 
             <dependency>

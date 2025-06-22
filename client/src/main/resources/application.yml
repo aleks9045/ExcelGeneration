@@ -9,10 +9,22 @@ logging:
     org.springframework: INFO
 
 server:
-  port: 8081
+  port: 8000
   error:
     include-stacktrace: always
   tomcat:
     connection-timeout: 5s
     keep-alive-timeout: 30s
     max-keep-alive-requests: 100
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 360000000
+      actuatorClient:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+generation.server.url: http://localhost:8080

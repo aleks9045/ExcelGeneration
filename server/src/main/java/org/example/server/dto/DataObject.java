@@ -46,8 +46,6 @@ public class DataObject {
     private String email;
     private String address;
     private String phoneNumber;
-    private String city;
-    private String country;
 
     private Boolean isAdmin;
     private Double longitude;
@@ -90,8 +88,6 @@ public class DataObject {
         dataObject.setEmail(RandomGenerator.getString(10));
         dataObject.setAddress(RandomGenerator.getString(10));
         dataObject.setPhoneNumber(RandomGenerator.getString(10));
-        dataObject.setCity(RandomGenerator.getString(10));
-        dataObject.setCountry(RandomGenerator.getString(10));
 
         dataObject.setIsAdmin(RandomGenerator.getBoolean());
         dataObject.setLongitude(RandomGenerator.getDouble());

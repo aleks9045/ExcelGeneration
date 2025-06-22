@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.example.server.enums.GeneratorName;
 import org.example.server.service.ExcelService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,15 +25,29 @@ public class ExcelController {
     @GetMapping("/generate")
     public ResponseEntity<List<String>> generateExcelFiles(
             @RequestParam("generator") GeneratorName generator,
-            @RequestParam("file_amount") @Positive @Min(1) Long file_amount,
-            @RequestParam("object_amount") @Positive @Min(1) Long object_amount,
+            @RequestParam("file_amount") @Positive @Min(1) Long fileAmount,
+            @RequestParam("object_amount") @Positive @Min(1) Long objectAmount,
             @RequestParam(value = "filename", required = false) Optional<String> filename) {
 
         var generatedFileNames = excelService.generateFiles(generator,
-                file_amount,
-                object_amount,
+                fileAmount,
+                objectAmount,
                 filename);
 
         return ResponseEntity.ok(generatedFileNames);
+    }
+
+    @GetMapping("/generateAsync")
+    @ResponseStatus(HttpStatus.OK)
+    public void generateExcelFilesAsync(
+            @RequestParam("generator") GeneratorName generator,
+            @RequestParam("file_amount") @Positive @Min(1) Long fileAmount,
+            @RequestParam("object_amount") @Positive @Min(1) Long objectAmount,
+            @RequestParam(value = "filename", required = false) Optional<String> filename) {
+
+        excelService.generateFilesAsync(generator,
+                fileAmount,
+                objectAmount,
+                filename);
     }
 }
