@@ -26,8 +26,8 @@ public class ClientController {
     @GetMapping("/generate")
     public ResponseEntity<List<String>> generateExcelFiles(
             @RequestParam("generator") GeneratorName generator,
-            @RequestParam("fileAmount") @Min(1) Long fileAmount,
-            @RequestParam("objectAmount") @Min(1) Long objectAmount,
+            @RequestParam("file_amount") @Min(1) Long fileAmount,
+            @RequestParam("object_amount") @Min(1) Long objectAmount,
             @RequestParam(value = "filename", required = false) Optional<String> filename) {
         List<String> generatedFiles = excelGenerationClientService.generateFiles(
                 generator,

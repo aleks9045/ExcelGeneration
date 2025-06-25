@@ -1,6 +1,5 @@
 package org.example.client.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -8,23 +7,20 @@ import org.example.client.enums.GeneratorName;
 import org.example.client.feign.ActuatorClient;
 import org.example.client.feign.ExcelGeneratorClient;
 import org.example.client.service.ExcelGenerationClientService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Aleksey
@@ -79,14 +75,15 @@ public class ExcelGenerationClientServiceImpl implements ExcelGenerationClientSe
 
             var cpuMetricMap = actuatorClient.getMetric("system.cpu.usage").getBody();
 
-            var cpuUsage = this.getValueFromMetricMap(cpuMetricMap)
+            var cpuUsage = Objects.requireNonNull(this.getValueFromMetricMap(cpuMetricMap))
                     .multiply(BigDecimal.valueOf(100))
                     .setScale(2, RoundingMode.HALF_UP);
 
             var memoryMetricMap = actuatorClient.getMetric("jvm.memory.used").getBody();
 
-            var memoryUsage = this.getValueFromMetricMap(memoryMetricMap)
-                    .divide(BigDecimal.valueOf(1024 * 1024), RoundingMode.HALF_UP);
+            var memoryUsage = Objects.requireNonNull(this.getValueFromMetricMap(memoryMetricMap))
+                    .divide(BigDecimal.valueOf(1024 * 1024), RoundingMode.HALF_UP)
+                    .setScale(0, RoundingMode.HALF_UP);
 
             log.info("Request load | CPU: {}%, Memory: {} MB", cpuUsage, memoryUsage);
 

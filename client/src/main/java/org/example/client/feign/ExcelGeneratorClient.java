@@ -18,5 +18,9 @@ import java.util.List;
 public interface ExcelGeneratorClient {
 
     @GetMapping("/api/v1/generate")
-    ResponseEntity<List<String>> generateExcelFiles(@RequestParam("generator") GeneratorName generator, @RequestParam("fileAmount") Long fileAmount, @RequestParam("objectAmount") Long objectAmount, @RequestParam(value = "filename", required = false) String filename);
+    ResponseEntity<List<String>> generateExcelFiles(
+            @RequestParam("generator") GeneratorName generator,
+            @RequestParam("file_amount") Long fileAmount,
+            @RequestParam("object_amount") Long objectAmount,
+            @RequestParam(value = "filename", required = false) String filename);
 }

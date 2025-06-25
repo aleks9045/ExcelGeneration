@@ -10,7 +10,6 @@ import java.util.SplittableRandom;
  */
 public class RandomGenerator {
     private final static SplittableRandom splittableRandom = new SplittableRandom();
-//    private final static Random random = new Random();
 
     public static Long getLong() {
         return splittableRandom.nextLong();

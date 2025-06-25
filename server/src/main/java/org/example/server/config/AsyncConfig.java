@@ -15,7 +15,7 @@ public class AsyncConfig {
     @Bean(name = "excelTaskExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(4);       // Число потоков по умолчанию
+        executor.setCorePoolSize(8);       // Число потоков по умолчанию
         executor.setMaxPoolSize(8);       // Максимальное число потоков
         executor.setQueueCapacity(100);    // Очередь задач
         executor.setThreadNamePrefix("AsyncExcel-");

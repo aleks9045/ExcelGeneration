@@ -36,6 +36,7 @@ public class ExcelServiceImpl implements ExcelService {
 
     private ScheduledFuture<?> monitoringTask;
     private final AtomicInteger activeTasks = new AtomicInteger();
+    private AtomicLong allTasksTime = new AtomicLong();
     @Autowired
     private MeterRegistry meterRegistry;
     private final FastExcelGenerator fastExcelGenerator;
@@ -70,6 +71,7 @@ public class ExcelServiceImpl implements ExcelService {
 
     public void startMonitoring() {
         if (activeTasks.getAndIncrement() == 0) {
+            this.allTasksTime = new AtomicLong(System.currentTimeMillis());
             monitoringTask = monitorExecutor.scheduleAtFixedRate(
                     this::logSystemMetrics,
                     1, 1, TimeUnit.SECONDS
@@ -78,8 +80,10 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     private void stopMonitoring() {
-        if (activeTasks.decrementAndGet() == 0){
+        if (activeTasks.decrementAndGet() == 0) {
+            this.allTasksTime = new AtomicLong((System.currentTimeMillis() - allTasksTime.get()) / 1000);
             monitoringTask.cancel(true);
+            log.info("Time spent for all tasks: {}s", this.allTasksTime);
         }
     }
 
@@ -103,7 +107,7 @@ public class ExcelServiceImpl implements ExcelService {
 
         for (long i = 0; i < fileAmount; ++i) {
 
-            String generatedFileName = function.apply(
+            var generatedFileName = function.apply(
                     objectAmount,
                     filename.orElse(UUID.randomUUID().toString()) + i + 1);
 
@@ -114,12 +118,12 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     private String generateByFastExcel(Long object_amount, String filename) {
-        List<DataObject> dataObjects = DataObject.getRandomInstanceList(object_amount);
+        var dataObjects = DataObject.getRandomInstanceList(object_amount);
         return fastExcelGenerator.writeToFile(dataObjects, filename);
     }
 
     private String generateByApachePOI(Long object_amount, String filename) {
-        List<DataObject> dataObjects = DataObject.getRandomInstanceList(object_amount);
+        var dataObjects = DataObject.getRandomInstanceList(object_amount);
         return sxssfGenerator.writeToFile(dataObjects, filename);
     }
 
@@ -128,16 +132,23 @@ public class ExcelServiceImpl implements ExcelService {
             double cpuUsageValue = meterRegistry.get("system.cpu.usage")
                     .gauge().value();
 
-            double memoryUsedValue = meterRegistry.get("jvm.memory.used")
+            var heapMemoryUsedValue = meterRegistry.get("jvm.memory.used")
                     .tag("area", "heap")
                     .gauge().value();
 
-            BigDecimal cpuPercent = BigDecimal.valueOf(cpuUsageValue)
+            var nonHeapMemoryUsedValue = meterRegistry.get("jvm.memory.used")
+                    .tag("area", "nonheap")
+                    .gauge().value();
+
+            var memoryUsedValue = heapMemoryUsedValue + nonHeapMemoryUsedValue;
+
+            var cpuPercent = BigDecimal.valueOf(cpuUsageValue)
                     .multiply(BigDecimal.valueOf(100))
                     .setScale(2, RoundingMode.HALF_UP);
 
-            BigDecimal memoryMB = BigDecimal.valueOf(memoryUsedValue)
-                    .divide(BigDecimal.valueOf(1024 * 1024), 0, RoundingMode.HALF_UP);
+            var memoryMB = BigDecimal.valueOf(memoryUsedValue)
+                    .divide(BigDecimal.valueOf(1024 * 1024), 0, RoundingMode.HALF_UP)
+                    .setScale(0, RoundingMode.HALF_UP);
 
             log.info("System Load | Active tasks: {}, CPU: {}%, Memory: {} MB",
                     activeTasks.get(),
