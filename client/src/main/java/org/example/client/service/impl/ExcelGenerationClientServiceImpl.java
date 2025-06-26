@@ -36,6 +36,7 @@ public class ExcelGenerationClientServiceImpl implements ExcelGenerationClientSe
 
     private final ObjectMapper objectMapper;
 
+    @Override
     public List<String> generateFiles(GeneratorName generator,
                                       Long fileAmount,
                                       Long objectAmount,
@@ -68,6 +69,18 @@ public class ExcelGenerationClientServiceImpl implements ExcelGenerationClientSe
         } finally {
             monitoringTask.cancel(true);
         }
+    }
+
+    @Override
+    public void generateFilesAsync(GeneratorName generator,
+                                   Long fileAmount,
+                                   Long objectAmount,
+                                   Optional<String> filename) {
+        log.info("Sent async request");
+        excelGeneratorClient.generateExcelFilesAsync(generator,
+                fileAmount,
+                objectAmount,
+                filename.orElse(null));
     }
 
     private void logServerMetrics() {

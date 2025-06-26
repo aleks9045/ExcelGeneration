@@ -23,4 +23,11 @@ public interface ExcelGeneratorClient {
             @RequestParam("file_amount") Long fileAmount,
             @RequestParam("object_amount") Long objectAmount,
             @RequestParam(value = "filename", required = false) String filename);
+
+    @GetMapping("/api/v1/generateAsync")
+    void generateExcelFilesAsync(
+            @RequestParam("generator") GeneratorName generator,
+            @RequestParam("file_amount") Long fileAmount,
+            @RequestParam("object_amount") Long objectAmount,
+            @RequestParam(value = "filename", required = false) String filename);
 }

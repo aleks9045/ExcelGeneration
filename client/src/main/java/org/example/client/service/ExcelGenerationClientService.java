@@ -15,4 +15,9 @@ public interface ExcelGenerationClientService {
                                Long fileAmount,
                                Long objectAmount,
                                Optional<String> filename);
+
+    void generateFilesAsync(GeneratorName generator,
+                            Long fileAmount,
+                            Long objectAmount,
+                            Optional<String> filename);
 }
